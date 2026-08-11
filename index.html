@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leitor de Textos</title>
+  <style>
+    /* CSS Básico compatível com iOS 9 Safari */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Helvetica, Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f7;
+      color: #333333;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 15px;
+    }
+
+    .header {
+      background-color: #007aff;
+      color: #ffffff;
+      padding: 12px 15px;
+      text-align: center;
+      position: relative;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .btn-back {
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      background-color: transparent;
+      border: 1px solid #ffffff;
+      color: #ffffff;
+      padding: 4px 10px;
+      font-size: 14px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    /* Estilo da lista de links (Página Inicial) */
+    .file-list {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0;
+      background-color: #ffffff;
+      border-radius: 8px;
+      border: 1px solid #dddddd;
+    }
+
+    .file-list li {
+      border-bottom: 1px solid #eeeeee;
+    }
+
+    .file-list li:last-child {
+      border-bottom: none;
+    }
+
+    .file-list a {
+      display: block;
+      padding: 15px;
+      color: #007aff;
+      text-decoration: none;
+      font-size: 16px;
+    }
+
+    .file-list a:active {
+      background-color: #e5e5ea;
+    }
+
+    /* Leitor de Texto */
+    .reader-box {
+      background-color: #ffffff;
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid #dddddd;
+      margin-top: 20px;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      font-size: 15px;
+      line-height: 1.5;
+    }
+
+    /* Utilitários para alternar telas */
+    .hidden {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Cabeçalho -->
+  <div class="header">
+    <button id="btnVoltar" class="btn-back hidden" onclick="mostrarLista()">Voltar</button>
+    <h1 id="tituloPagina">Leitor de Textos</h1>
+  </div>
+
+  <div class="container">
+    <!-- Visão 1: Lista de Arquivos -->
+    <div id="viewLista">
+      <p>Selecione um texto para ler:</p>
+      <ul class="file-list">
+        <li><a href="#" onclick="carregarTexto('texto1.txt'); return false;">Texto 1 (texto1.txt)</a></li>
+        <li><a href="#" onclick="carregarTexto('texto2.txt'); return false;">Texto 2 (texto2.txt)</a></li>
+        <li><a href="#" onclick="carregarTexto('noticia.txt'); return false;">Notícia (noticia.txt)</a></li>
+      </ul>
+    </div>
+
+    <!-- Visão 2: Leitor do Conteúdo -->
+    <div id="viewLeitor" class="hidden">
+      <div id="conteudoTexto" class="reader-box">Carregando...</div>
+    </div>
+  </div>
+
+  <script>
+    // JavaScript ES5 puro e antigo compatível com iOS 9
+    var viewLista = document.getElementById('viewLista');
+    var viewLeitor = document.getElementById('viewLeitor');
+    var btnVoltar = document.getElementById('btnVoltar');
+    var tituloPagina = document.getElementById('tituloPagina');
+    var conteudoTexto = document.getElementById('conteudoTexto');
+
+    function mostrarLista() {
+      viewLista.className = '';
+      viewLeitor.className = 'hidden';
+      btnVoltar.className = 'btn-back hidden';
+      tituloPagina.innerHTML = 'Leitor de Textos';
+      conteudoTexto.innerHTML = '';
+    }
+
+    function carregarTexto(nomeArquivo) {
+      // Exibe a tela de leitura e atualiza interface
+      viewLista.className = 'hidden';
+      viewLeitor.className = '';
+      btnVoltar.className = 'btn-back';
+      tituloPagina.innerHTML = nomeArquivo;
+      conteudoTexto.innerHTML = 'Carregando arquivo...';
+
+      // Requisição AJAX via XMLHttpRequest (padrao ES5)
+      var xhr = new XMLHttpRequest();
+      
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+          if (xhr.status === 200 || xhr.status === 0) { // 0 para testes locais (file://)
+            conteudoTexto.innerText = xhr.responseText;
+          } else {
+            conteudoTexto.innerHTML = 'Erro ao carregar o arquivo "' + nomeArquivo + '".<br>Verifique se o arquivo existe na mesma pasta.';
+          }
+        }
+      };
+
+      xhr.open('GET', nomeArquivo, true);
+      xhr.send(null);
+    }
+  </script>
+
+</body>
+</html>
